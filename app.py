@@ -5,7 +5,7 @@ import os
 from IPython import embed
 
 import platform
-
+from text_diff import parse, diff
 
 app = Flask(__name__)
 
@@ -40,11 +40,14 @@ def back_translate(text, mid='fr'):
     forward = curl.replace("SOURCE", "en").replace("TARGET", mid).replace("QUERY", text)
     translation = extract(forward)
     
-
+    print(translation)
     backward = curl.replace("SOURCE", mid).replace("TARGET", "en").replace("QUERY", translation)
-    
+    embed()
     paraphrased = extract(backward)
-    return paraphrased
+    print(paraphrased)
+    changes = diff(parse(text),parse(paraphrased))[0]
+
+    return {"paraphrased":paraphrased, "changes":changes}
 
 
 
@@ -56,8 +59,10 @@ def index():
 @app.route("/paraphrase")
 def paraphrase():
     text = request.values.get('text')
-    para = back_translate(text)
-    return render_template('index.html',text = text, modified = para)
+    modified = back_translate(text)
+    para = modified["paraphrased"]
+    changes = modified["changes"]
+    return render_template('index.html',text = text, modified = para, changes = changes)
 
 if __name__ == "__main__":
     app.run(host = 'localhost', port = 4000)

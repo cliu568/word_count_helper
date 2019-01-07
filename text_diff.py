@@ -99,7 +99,7 @@ def diff(s1,s2):
 
 # In[64]:
 
-print(diff(parse("I knew woods so dark that my hands disappeared before my eyes"),parse("I know the woods are too dark, my hands are gone in front of my eyes")))
+
 
 
 # In[ ]:
