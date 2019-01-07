@@ -3,9 +3,9 @@ import json
 import subprocess
 import os
 from IPython import embed
-
+from text_diff import diff, parse
 import platform
-from text_diff import parse, diff
+
 
 app = Flask(__name__)
 
@@ -45,17 +45,18 @@ def back_translate(text, mid='fr'):
     forward = curl.replace("SOURCE", "en").replace("TARGET", mid).replace("QUERY", text)
     translation = escape(extract(forward))
     
-    print(translation)
+
     backward = curl.replace("SOURCE", mid).replace("TARGET", "en").replace("QUERY", translation)
-    embed()
+    
     paraphrased = extract(backward)
-    print(paraphrased)
-    changes = diff(parse(text),parse(paraphrased))[0]
-
-    return {"paraphrased":paraphrased, "changes":changes}
 
 
-test()
+    tracked = diff(parse(text), parse(paraphrased))[0]
+    print(tracked)
+    return {"paraphrased":paraphrased, "tracked":tracked}
+
+
+#test()
 
 
 @app.route("/")
@@ -65,10 +66,9 @@ def index():
 @app.route("/paraphrase")
 def paraphrase():
     text = request.values.get('text')
-    modified = back_translate(text)
-    para = modified["paraphrased"]
-    changes = modified["changes"]
-    return render_template('index.html',text = text, modified = para, changes = changes)
+    para = back_translate(text)["paraphrased"]
+    tracked = back_translate(text)["tracked"]
+    return render_template('index.html',text = text, modified = para, tracked = tracked)
 
 if __name__ == "__main__":
     app.run(host = 'localhost', port = 4000)

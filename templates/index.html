@@ -1,5 +1,5 @@
 <head>
-  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="styles.css" type="text/css">
 </head>
 <body>
 <form class="centerc" action="/paraphrase">
@@ -8,12 +8,44 @@
   <input class="button" type="submit" value="Submit">
 </form> 
 <div name="response">
-	TEST
+{{modified}}
 </div>
+<div name="tracked", id = "tracked">
+
+</div>
+<div style="visibility: hidden" id = "to_parse">
+{{tracked}}
+</div>
+<script>
+to_render = document.getElementById("to_parse").innerHTML;
+
+l = to_render.length;
+prev = 0;
+final = '';
+for(i=1; i<l; i++){
+	next_string = '';
+	if(to_render[i]=='%'){
+		if(to_render[prev+1] =='-'){
+			next_string = '<font color="red">' + '<del>' + to_render.slice(prev+2, i) + '</del>'+'</font>'+ " ";
+		}
+		else if(to_render[prev+1] =='+'){
+			next_string = '<font color="green">'+ to_render.slice(prev+2, i) + '</font>' + " ";
+		}
+		else{
+			next_string = to_render.slice(prev+1, i) + " ";
+		}
+		prev = i;
+	}
+	
+	
+	final += next_string;
+	
+	//document.getElementById("tracked").innerHTML += next_string ;
+}
+document.getElementById("tracked").innerHTML = final;
+</script>
+
 <p>
-</p>
-<p>
-{{changes}}
 </p>
 </body>
 

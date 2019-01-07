@@ -71,10 +71,11 @@ def diff(s1,s2):
                 
     i = 0
     j = 0
-    output = ''
+    output = '%'
     while(i < l1 or j < l2):
+        
         output += operations[i][j]
-        output += "&"
+        output += "%"
         
             
         if(operations[i][j][0] =='-'):
