@@ -1,0 +1,8 @@
+.centerc {
+    display: flex;
+    align-items: center;
+}
+
+.button {
+    margin: 1em;
+}
