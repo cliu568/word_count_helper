@@ -9,7 +9,7 @@ app = Flask(__name__)
 with open("CURL.txt") as f:
     curl = f.readline()
 
-os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "Translation-5254a3fddf5e.json"
+os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "Translation-7d977f84cfdd.json"
 
 def extract(httpcurl):
     raw_response = subprocess.check_output(httpcurl, shell=True)
