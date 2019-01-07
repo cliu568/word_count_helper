@@ -41,7 +41,7 @@ def escape(text):
     text = text.replace("'", "\\'")
     return text
 
-def back_translate(text, mid='fr',sign = 'longer'):
+def back_translate(text, sign):
     text = escape(text)
     candidates = {}
     for language in languages:
@@ -72,7 +72,8 @@ def index():
 @app.route("/paraphrase")
 def paraphrase():
     text = request.values.get('text')
-    translated = back_translate(text)
+    sign = request.values.get('sign')
+    translated = back_translate(text, sign)
     para = translated["paraphrased"]
     tracked = translated["tracked"]
     return render_template('index.html',text = text, modified = para, tracked = tracked)

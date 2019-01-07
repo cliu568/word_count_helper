@@ -5,7 +5,13 @@
 <form class="centerc" action="/paraphrase">
   <textarea name="text" rows="10" cols="150">
 </textarea>
-  <input class="button" type="submit" value="Submit">
+<div class="submit">
+  <input class="element" type="submit" value="Submit">
+  <select name="sign" class="element">
+      <option value="longer">Longer</option>
+      <option value="shorter">Shorter</option>
+  </select>
+</div>
 </form> 
 <div name="original">
 {{text}}
