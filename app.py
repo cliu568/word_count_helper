@@ -1,4 +1,5 @@
 from flask import Flask, flash, redirect, render_template, request, session, abort
+import datetime
 import json
 import subprocess
 import os
@@ -66,8 +67,9 @@ def index():
 @app.route("/paraphrase")
 def paraphrase():
     text = request.values.get('text')
-    para = back_translate(text)["paraphrased"]
-    tracked = back_translate(text)["tracked"]
+    translated = back_translate(text)
+    para = translated["paraphrased"]
+    tracked = translated["tracked"]
     return render_template('index.html',text = text, modified = para, tracked = tracked)
 
 if __name__ == "__main__":
