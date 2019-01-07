@@ -22,12 +22,11 @@ os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "Translation-a3cfdf2016a1.json"
 
 def test():
     print(curl)
-    base = "Fujisaki Station is a station on the Gonō line, 144.7 km from the terminus of the Higashi-Noshiro Line."
+    base = "After configuration is complete, take note of the client ID that was created. You will need the client's \"ID\" to complete the next steps."
     para = back_translate(base)
 
     embed()
     
-
 
 
 def extract(httpcurl):
@@ -36,9 +35,15 @@ def extract(httpcurl):
     translation = json.loads(raw_response.decode('utf-8'))['data']['translations'][0]['translatedText']
     return translation
 
+def escape(text):
+    text = text.replace("\"", "\\\"")
+    text = text.replace("'", "\\'")
+    return text
+
 def back_translate(text, mid='fr'):
+    text = escape(text)
     forward = curl.replace("SOURCE", "en").replace("TARGET", mid).replace("QUERY", text)
-    translation = extract(forward)
+    translation = escape(extract(forward))
     
 
     backward = curl.replace("SOURCE", mid).replace("TARGET", "en").replace("QUERY", translation)
@@ -47,6 +52,7 @@ def back_translate(text, mid='fr'):
     return paraphrased
 
 
+test()
 
 
 @app.route("/")
