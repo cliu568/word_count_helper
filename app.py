@@ -4,10 +4,10 @@ import json
 import subprocess
 import os
 from IPython import embed
-from text_diff import diff, parse
+from text_diff import diff, parse, filter_sentences
 import platform
 
-
+languages = [ 'es','de','la','fr']
 app = Flask(__name__)
 
 if(platform.system() =='Windows'):
@@ -41,20 +41,25 @@ def escape(text):
     text = text.replace("'", "\\'")
     return text
 
-def back_translate(text, mid='fr'):
+def back_translate(text, mid='fr',sign = 'longer'):
     text = escape(text)
-    forward = curl.replace("SOURCE", "en").replace("TARGET", mid).replace("QUERY", text)
-    translation = escape(extract(forward))
-    
+    candidates = {}
+    for language in languages:
+        forward = curl.replace("SOURCE", "en").replace("TARGET", language).replace("QUERY", text)
+        translation = escape(extract(forward))
+        backward = curl.replace("SOURCE", language).replace("TARGET", "en").replace("QUERY", translation)
+        paraphrased = extract(backward)
+        candidates[language] = paraphrased
 
-    backward = curl.replace("SOURCE", mid).replace("TARGET", "en").replace("QUERY", translation)
-    
-    paraphrased = extract(backward)
+    current = text
+    for language in languages:
+        current = filter_sentences(current,candidates[language])[sign]
+        
 
 
-    tracked = diff(parse(text), parse(paraphrased))[0]
+    tracked = diff(parse(text), parse(current))[0]
     print(tracked)
-    return {"paraphrased":paraphrased, "tracked":tracked}
+    return {"paraphrased":current, "tracked":tracked}
 
 
 #test()

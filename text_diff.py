@@ -93,7 +93,35 @@ def diff(s1,s2):
                 
         
 
-        
+def filter_sentences(s1,s2):
+    sentences1 = s1.split('.')
+    sentences2 = s2.split('.')
+    if(s1.endswith('.')):
+        sentences1.pop()
+    if(s2.endswith('.')):
+        sentences2.pop()
+
+    if(len(sentences1) != len(sentences2)):
+        count1 = len(s1.split(' '))
+        count2 = len(s2.split(' '))
+        if(count1 < count2):
+            return {'shorter':s1,'longer':s2}
+        else:
+            return {'shorter':s2,'longer':s1}
+    else:
+        long_version = ''
+        short_version = ''
+        l = len(sentences1)
+        for i in range(l):
+            count1 = len(sentences1[i].split(' '))
+            count2 = len(sentences2[i].split(' '))
+            if(count1 < count2):
+                short_version += (sentences1[i] + '.')
+                long_version += (sentences2[i] + '.')
+            else:
+                short_version += (sentences2[i] + '.')
+                long_version += (sentences1[i] + '.')
+    return{'shorter':short_version,'longer':long_version}
 
             
 
