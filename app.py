@@ -79,7 +79,7 @@ def back_translate(text, sign):
     
     mythreads = []
 
-    for language in languages:
+    for language in intermediates.keys():
         backward = curl.replace("SOURCE", language).replace("TARGET", "en").replace("QUERY", intermediates[language])
         t = threading.Thread(target = extract, args = (backward, candidates, language, False))
         t.start()
@@ -89,7 +89,7 @@ def back_translate(text, sign):
         pass
     
     current = text
-    for language in languages:
+    for language in candidates.keys():
         current = filter_sentences(current,candidates[language])[sign]
         
 
