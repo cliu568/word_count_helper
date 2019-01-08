@@ -61,12 +61,12 @@ def extract(httpcurl, dictionary, lang, to_escape = True):
 
 
 def back_translate(text, sign):
-    text = escape(text)
+    escaped_text = escape(text)
     candidates = {}
     intermediates = {}
     for language in languages:
         
-        forward = curl.replace("SOURCE", "en").replace("TARGET", language).replace("QUERY", text)
+        forward = curl.replace("SOURCE", "en").replace("TARGET", language).replace("QUERY", escaped_text)
         t = threading.Thread(target = extract, args = (forward, intermediates, language, True))
         t.start()
     
