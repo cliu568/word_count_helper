@@ -1,7 +1,10 @@
 from flask import Flask, flash, redirect, render_template, request, session, abort
-import datetime
+import datetime, time
 import json
 import subprocess
+import threading
+import threading
+from unidecode import unidecode
 import os
 from IPython import embed
 from text_diff import diff, parse, filter_sentences
@@ -23,34 +26,61 @@ os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "Translation-a3cfdf2016a1.json"
 
 def test():
     print(curl)
-    base = "After configuration is complete, take note of the client ID that was created. You will need the client's \"ID\" to complete the next steps."
+    base = "Below is one way to think about how a recurrent network operates: at each time step, it combines input from the present moment, as well as input from the memory layer, to make a decision about the data."
     para = back_translate(base)
 
     embed()
     
 
 
-def extract(httpcurl):
-    raw_response = subprocess.check_output(httpcurl, shell=True)
-    
-    translation = json.loads(raw_response.decode('utf-8'))['data']['translations'][0]['translatedText']
-    return translation
+
 
 def escape(text):
     text = text.replace("\"", "\\\"")
     text = text.replace("'", "\\'")
     return text
 
+def extract(httpcurl, dictionary, lang, to_escape = True):
+    before = time.clock()
+    raw_response = subprocess.check_output(httpcurl, shell=True)
+    after = time.clock()
+    print(after - before)
+    print(raw_response)
+    decoded = raw_response.decode('utf-8')
+    decoded = unidecode(decoded)
+    decoded = decoded.strip()
+    if(decoded[:2] == 'C:'):
+        decoded = ('\n').join(decoded.split('\n')[1:])
+    print(decoded)
+
+    translation = json.loads(decoded)['data']['translations'][0]['translatedText']
+    if(to_escape):
+        dictionary[lang] = escape(translation)
+    else:
+        dictionary[lang] = translation
+
+
 def back_translate(text, sign):
     text = escape(text)
     candidates = {}
+    intermediates = {}
     for language in languages:
+        
         forward = curl.replace("SOURCE", "en").replace("TARGET", language).replace("QUERY", text)
-        translation = escape(extract(forward))
-        backward = curl.replace("SOURCE", language).replace("TARGET", "en").replace("QUERY", translation)
-        paraphrased = extract(backward)
-        candidates[language] = paraphrased
+        t = threading.Thread(target = extract, args = (forward, intermediates, language, True))
+        t.start()
+    
+    while len(threading.enumerate())>1:
+        stall=1 
 
+    for language in languages:
+        backward = curl.replace("SOURCE", language).replace("TARGET", "en").replace("QUERY", intermediates[language])
+        t = threading.Thread(target = extract, args = (backward, candidates, language, False))
+        t.start()
+    
+    while len(threading.enumerate())>1:
+        stall=1     
+    
     current = text
     for language in languages:
         current = filter_sentences(current,candidates[language])[sign]
