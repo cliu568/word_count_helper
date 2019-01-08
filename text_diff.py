@@ -116,11 +116,17 @@ def filter_sentences(s1,s2):
             count1 = len(sentences1[i].split(' '))
             count2 = len(sentences2[i].split(' '))
             if(count1 < count2):
-                short_version += (sentences1[i] + '.')
-                long_version += (sentences2[i] + '.')
+                short_version += sentences1[i]
+                long_version += sentences2[i]
             else:
-                short_version += (sentences2[i] + '.')
-                long_version += (sentences1[i] + '.')
+                short_version += sentences2[i] 
+                long_version += sentences1[i]
+            if(i < l-1):
+                short_version += '.'
+                long_version += '.'
+            elif s1.endswith('.') and s2.endswith('.'):
+                short_version += '.'
+                long_version += '.'
     return{'shorter':short_version,'longer':long_version}
 
             
