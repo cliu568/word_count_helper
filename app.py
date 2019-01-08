@@ -27,7 +27,7 @@ os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "Translation-a3cfdf2016a1.json"
 def test():
     print(curl)
     base = "Below is one way to think about how a recurrent network operates: at each time step, it combines input from the present moment, as well as input from the memory layer, to make a decision about the data."
-    para = back_translate(base)
+    para = back_translate(base, 'longer')
 
     embed()
     
@@ -59,27 +59,34 @@ def extract(httpcurl, dictionary, lang, to_escape = True):
     else:
         dictionary[lang] = translation
 
+    print("{} done".format(lang))
+
 
 def back_translate(text, sign):
     escaped_text = escape(text)
     candidates = {}
     intermediates = {}
+    mythreads = []
     for language in languages:
         
         forward = curl.replace("SOURCE", "en").replace("TARGET", language).replace("QUERY", escaped_text)
         t = threading.Thread(target = extract, args = (forward, intermediates, language, True))
         t.start()
+        mythreads.append(t)
+
+    while any(t.isAlive() for t in mythreads):
+        pass
     
-    while len(threading.enumerate())>1:
-        stall=1 
+    mythreads = []
 
     for language in languages:
         backward = curl.replace("SOURCE", language).replace("TARGET", "en").replace("QUERY", intermediates[language])
         t = threading.Thread(target = extract, args = (backward, candidates, language, False))
         t.start()
+        mythreads.append(t)
     
-    while len(threading.enumerate())>1:
-        stall=1     
+    while any(t.isAlive() for t in mythreads):
+        pass
     
     current = text
     for language in languages:
