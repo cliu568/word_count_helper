@@ -1,0 +1,114 @@
+<!DOCTYPE HTML>
+<!--
+	Alpha by HTML5 UP
+	html5up.net | @ajlkn
+	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
+-->
+
+<html>
+	<head>
+		<title>AlphaWrite</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+		<link rel="stylesheet" href="assets/css/main.css" />
+	</head>
+	<body class="landing is-preload">
+		<div id="page-wrapper">
+
+			<!-- Header -->
+				
+
+			<!-- Banner -->
+				<section id="banner">
+					<h2>AlphaWrite</h2>
+					<p>Writing tool to make sure you meet word count constraints.</p>
+					<ul class="actions special">
+						<li><a href="#description" class="button primary">Try it out!</a></li>
+					
+					</ul>
+				</section>
+
+			<!-- Main -->
+				<section id="main" class="container">
+					
+					<section class="box special" id = "description">
+						<header class="major">
+							<h2>Automatic Essay Editing</h2>
+							<p>Enter your text below and either lenghthen or shorten it.  The desperation meter controls the desired amount of change.  Keep in mind higher desperation may result in compromised quality</p>
+						</header>
+					</section>
+					<form class="centerc" action="/paraphrase">
+						  <textarea name="text" rows="10" cols="150" id = "input_text">
+						</textarea>
+						<div style = "display:flex">
+							<div style = "width:47%">
+							<select name="sign" class="element", id = "select_sign">
+							      <option value="longer">Longer</option>
+	      							<option value="shorter">Shorter</option>
+	  						</select>
+	  						</div>
+
+							
+							<div style = "width:6%">
+							
+							</div>
+							<div style = "width:47%", class="slidecontainer", name = "desperation" >
+								<div style = "display:flex">
+									<div><b>Desperation:  </b>  </div>
+									<div id = "desperation_value"></div>
+								</div>
+	  							<input type="range" min="1" max="100" value="50" class="slider" id="desperation">
+							</div>
+							
+  						</div>
+  					<div class="submit">
+						  <input class="element" type="submit" value="Submit">
+						  
+					</div>
+					<script>
+						var slider = document.getElementById("desperation");
+						var output = document.getElementById("desperation_value");
+						output.innerHTML = slider.value;
+
+						slider.oninput = function() {
+						  output.innerHTML = '<b>' + this.value + '</b>';
+						}
+					</script>
+					</form> 
+
+					<div id = "output">
+					<h2>Your Output</h2>
+					<textarea name="text" rows="10" cols="150" id = "output_text" readonly>
+					</textarea>
+					</div>
+					<script>
+						document.getElementById("output_text").innerHTML = '{{modified}}'
+					</script>
+
+
+				</section>
+					
+
+			
+
+			<!-- Footer -->
+				<footer id="footer">
+				
+					<ul class="copyright">
+						<li>&copy; Created at Hack Lodge 2019</li>
+					</ul>
+				</footer>
+
+		</div>
+
+		<!-- Scripts -->
+			<script src="assets/js/jquery.min.js"></script>
+			<script src="assets/js/jquery.dropotron.min.js"></script>
+			<script src="assets/js/jquery.scrollex.min.js"></script>
+			<script src="assets/js/browser.min.js"></script>
+			<script src="assets/js/breakpoints.min.js"></script>
+			<script src="assets/js/util.js"></script>
+			<script src="assets/js/main.js"></script>
+
+	</body>
+</html>
